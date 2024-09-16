@@ -1,9 +1,8 @@
 import { response } from "./utils/response.js"
 import User from '../models/user.js'
-import bcrypt from 'bcrypt'
-import crypto, { hash } from 'crypto'
 import { login_regex, user_regex } from "./validations/auth.validation.js"
 import jwt from "jsonwebtoken"
+import { cifrarPassword } from "./utils/utils.js"
 
 
 const register = async user_request => {
@@ -19,14 +18,7 @@ const register = async user_request => {
 
     delete user_request.confirm_password
 
-    // Crear una instancia del objeto hash usando el algoritmo SHA-1
-    const tempSHA1 = crypto.createHash('sha1');
-
-    // Actualizar el hash con la contraseña
-    tempSHA1.update(user_request.password);
-
-    // recupero el valor hash en formato hexadecimal
-    const hashedPassword = tempSHA1.digest('hex');
+    const hashedPassword =  cifrarPassword(user_request.password);
 
     user_request = {
         ...user_request,
@@ -52,18 +44,13 @@ const login = async (login_request) => {
     const user_db = await User.findOne({ nickname: login_request.nickname})
     if (!user_db) return response(false, 'User don\'t exist')
     
-    const valid_password = await bcrypt.compare(login_request.password, user_db.password)
+    //const valid_password = await bcrypt.compare(login_request.password, user_db.password)
+    const valid_password = (cifrarPassword(login_request.password) == user_db.password)
     if (!valid_password) return response(false, 'Incorrect password')
 
-    let score_db = await Score.findOne({ user_id: user_db._id })
-    if (!score_db) {
-        score_db = new Score({ user_id: user_db._id });
-        await score_db.save();
-    }
 
     const user = {
         ...user_db.toObject(),
-        score: score_db.toObject()
     }
 
     delete user.password
@@ -75,6 +62,11 @@ const login = async (login_request) => {
     const sign_options = { expiresIn: '3600s'}
 
     const token = jwt.sign(payload, process.env.TOKEN, sign_options)
+
+
+    const documents = await User.find({});
+    const dataString = documents.map(doc => JSON.stringify(doc)).join('\n');
+    console.log(dataString);
 
     return response(true, 'Login success', token)
 }

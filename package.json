@@ -1,0 +1,26 @@
+{
+  "name": "backendsegsoft",
+  "version": "1.0.0",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --env-file .env --watch app.js",
+    "start": "node --env-file .env.produccion app.js"
+  },
+  "keywords": [
+    "seginformacion",
+    "game"
+  ],
+  "author": "Grupo de ",
+  "license": "MIT",
+  "description": "Proyecto Final Seg. Software",
+  "dependencies": {
+    "bcrypt": "5.1.1",
+    "cors": "^2.8.5",
+    "express": "4.19.2",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "9.0.2",
+    "mongoose": "8.4.4",
+    "twilio": "^5.2.2"
+  }
+}

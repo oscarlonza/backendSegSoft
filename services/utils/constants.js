@@ -21,10 +21,3 @@ export const constants = {
     rounds: 5,
   },
 };
-
-export const questions_message = {
-  wrong: "Some questions were not created successfully",
-  correct: "All questions were created successfully",
-  question_deleted: "Question Deleted",
-  question_not_found: "Question Not Found",
-};

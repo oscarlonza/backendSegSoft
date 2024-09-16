@@ -7,5 +7,4 @@ auth_router.post('/register', register)
 
 auth_router.post('/login', login)
 
-
 export default auth_router
