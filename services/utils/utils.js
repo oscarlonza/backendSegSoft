@@ -1,21 +1,7 @@
 import { Types } from 'mongoose';
 import crypto from 'crypto'
+import fs from 'fs/promises'
 
-const format_question_response = inbound_question => {
-
-  const { _id, difficulty, question, wrong_answer, correct_answer } = inbound_question[0]
-
-  const options = [...wrong_answer, correct_answer].sort(() => Math.random() - 0.5)
-
-  const question_response = {
-    _id,
-    difficulty,
-    question,
-    options
-  }
-
-  return question_response
-}
 
 const objectId_validator = (value, helpers) => {
   if (!Types.ObjectId.isValid(value)) {
@@ -34,8 +20,28 @@ const cifrarPassword = (strPassword) => {
   return hashedPassword;
 }
 
+async function readAndValidateFile(filePath) {
+
+  try {
+    // Leer el archivo
+    const content = await fs.readFile(filePath, 'utf8');
+    // Si la lectura es exitosa, devolver el contenido del archivo
+    return {
+      success: true,
+      message: 'Archivo leído exitosamente.',
+      data: content
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: 'Error al leer el archivo.',
+      error: err.message
+    };
+  }
+}
+
 export {
-  format_question_response,
   objectId_validator,
-  cifrarPassword
+  cifrarPassword,
+  readAndValidateFile
 }
