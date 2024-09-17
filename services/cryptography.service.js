@@ -38,6 +38,7 @@ const encryptFile = async encrypt_request => {
         await fs.promises.writeFile(outputFile, ivBuffer);
 
         return response(true, 'Archivo cifrado exitosamente.')
+        console.log('');
 
     } catch (err) {
 
