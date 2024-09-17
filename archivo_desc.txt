@@ -1,3 +1,0 @@
-{"active":true,"_id":"668b119563d1c8d595caf1b1","name":"Hans Peluffo","nickname":"hspnet","cel":"3017484086","password":"$2b$05$qGteLrqJSLzOYnFEfi2YcOuI.r/VBX1aPZ/YysiYjuiyYoAJ93Hou","email":"hanspeluffodiaz@hotmail.com","date":"2024-07-07T22:07:17.675Z","__v":0}
-{"_id":"66e60873dad30fc6916e9d45","name":"Hans Peluffo","nickname":"hspnet2","cel":"3017484087","password":"880ff196d16c11d288e911b2b1f8e966842627dd","email":"hanspeluffodiaz@hotmail.com","active":true,"date":"2024-09-14T22:04:35.024Z","__v":0}
-{"_id":"66e60c9dff532378f8283274","name":"Hans Peluffo","nickname":"hspnet3","cel":"3017484089","password":"880ff196d16c11d288e911b2b1f8e966842627dd","email":"hanspeluffodiaz@hotmail.com","active":true,"date":"2024-09-14T22:22:21.036Z","__v":0}
