@@ -9,7 +9,7 @@ import { finished as streamFinished } from 'stream';
 const encryptFile = async encrypt_request => {
 
     const { error } = encrypt_regex.validate(encrypt_request)
-    if (error) return response(false, error.details[0].message + ' hola')
+    if (error) return response(false, error.details[0].message)
 
     const inputKey = encrypt_request.inputKey;
     const inputFile = path.join(encrypt_request.inputFilePath);
@@ -38,7 +38,6 @@ const encryptFile = async encrypt_request => {
         await fs.promises.writeFile(outputFile, ivBuffer);
 
         return response(true, 'Archivo cifrado exitosamente.')
-        console.log('');
 
     } catch (err) {
 
