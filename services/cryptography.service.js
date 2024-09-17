@@ -9,7 +9,7 @@ import { finished as streamFinished } from 'stream';
 const encryptFile = async encrypt_request => {
 
     const { error } = encrypt_regex.validate(encrypt_request)
-    if (error) return response(false, error.details[0].message)
+    if (error) return response(false, error.details[0].message + ' hola')
 
     const inputKey = encrypt_request.inputKey;
     const inputFile = path.join(encrypt_request.inputFilePath);
@@ -47,6 +47,7 @@ const encryptFile = async encrypt_request => {
 }
 
 const decryptFile = async decrypt_request => {
+
 
     const { error } = decrypt_regex.validate(decrypt_request)
     if (error) return response(false, error.details[0].message)
