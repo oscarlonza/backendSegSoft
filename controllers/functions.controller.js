@@ -7,7 +7,8 @@ const { status } = constants.response
 
 const exportAllUser = async (req, res) => {
 
-    const user_db = await exportAllUser_service(req.body)
+    //const user_db = await exportAllUser_service(req.body, res)
+    const user_db = await exportAllUser_service(res)
     res.status(status.OK).json(user_db)
 }
 
