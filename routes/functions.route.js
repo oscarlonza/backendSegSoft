@@ -4,7 +4,6 @@ import { valid_token } from "../services/middleware/valid-token.js";
 
 const functions_router = Router()
 
-//functions_router.post('/exportAll', valid_token, exportAllUser)
 functions_router.get('/exportAll', valid_token, exportAllUser)
 
 functions_router.post('/encrypt', valid_token, encryptFile)
