@@ -18,23 +18,26 @@ const encryptFile = async (req) => {
     console.log('Archivo enviado: ', txtFileData);
 
     // Decodificar el archivo de Base64
-    const buffer = Buffer.from(txtFileData, 'base64');
+    //const buffer = Buffer.from(txtFileData, 'base64');
 
     // Convertir el buffer a una cadena de texto
-    const textContent = buffer.toString('utf8');
-    console.log('Archivo ya transformado a texto: ', textContent);
+    const textContent = txtFileData.toString('utf8');
+    console.log('Archivo ya transformado a texto: ', txtFileData);
 
     const password = generateKeyFromPassword(inputKey);
     const algorithm = 'aes-256-cbc'; // Algoritmo de cifrado
     const key = Buffer.from(password, 'hex');
 
     const iv = crypto.randomBytes(16); // Vector de inicialización (IV) aleatorio
+    console.log('IV:' , iv);
+    const fgfg = Buffer.from(iv, 'hex');
+    console.log('IV hex:' , iv);
 
     try {
         // Crear el cifrador
         const cipher = crypto.createCipheriv(algorithm, key, iv);
-        let encrypted = cipher.update(textContent, 'utf8', 'hex');
-        encrypted += cipher.final('hex');
+        let encrypted = cipher.update(textContent, 'utf8');
+        encrypted += cipher.final('utf8');
 
         console.log('Archivo cifrado: ', encrypted);
 
@@ -54,13 +57,6 @@ const encryptFile = async (req) => {
             },
             buffer: buffer
         };
-        //res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
-       // res.setHeader('Content-Type', contentType);
-        //res.setHeader('Content-Length', buffer.length);
-
-        // Enviar el stream al cliente
-        //res.send(buffer);
-        //return res.json({ res });
         return response(true, 'Archivo cifrado correctamente.', responseData)
 
     } catch (err) {
@@ -107,13 +103,51 @@ const encryptFile = async (req) => {
     }*/
 }
 
-const decryptFile = async decrypt_request => {
+const decryptFile = async req => {
 
 
-    const { error } = decrypt_regex.validate(decrypt_request)
+    const { error } = decrypt_regex.validate(req)
     if (error) return response(false, error.details[0].message)
 
-    const inputKey = decrypt_request.inputKey;
+    const inputKey = req.inputKey;
+
+    const txtFileData = req.fileData;
+    console.log('Archivo enviado: ', txtFileData);
+
+    // Decodificar el archivo de Base64
+    const buffer = Buffer.from(txtFileData, 'base64');
+
+    // Convertir el buffer a una cadena de texto
+    const textContent = txtFileData.toString('utf8');
+    console.log('Archivo transformado a texto: ', buffer);
+
+    const password = generateKeyFromPassword(inputKey);
+    const algorithm = 'aes-256-cbc'; // Algoritmo de cifrado
+    const key = Buffer.from(password, 'hex');
+
+    //const iv = crypto.randomBytes(16); // Vector de inicialización (IV) aleatorio
+
+    try {
+
+        // Extraer el IV (primeros 16 bytes del archivo cifrado)
+        const iv = textContent.slice(0, 16);
+        console.log('IV: ', iv)
+
+        // Extraer los datos cifrados (resto del archivo)
+        const encryptedData = textContent.slice(16);
+
+        const decipher = crypto.createDecipheriv(algorithm, key, iv);
+        let decrypted = decipher.update(encryptedData, 'utf8'); // Ajusta el formato según sea necesario
+        decrypted += decipher.final('utf8');
+
+        return response(true, 'Archivo descifrado exitosamente.')
+
+    } catch (err) {
+
+        return response(false, 'Error al descifrar el archivo.', err.message)
+    }
+
+    /*const inputKey = decrypt_request.inputKey;
     const inputFile = path.join(decrypt_request.inputFilePath);
     const outputFile = path.join(decrypt_request.outputFilePath);
 
@@ -153,7 +187,7 @@ const decryptFile = async decrypt_request => {
     } catch (err) {
 
         return response(false, 'Error al descifrar el archivo.', err.message)
-    }
+    }*/
 }
 
 export { encryptFile, decryptFile }
