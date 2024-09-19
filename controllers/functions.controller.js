@@ -1,6 +1,6 @@
-import { exportAllUser as exportAllUser_service} from "../services/functions.service.js"
+import { exportAllUser as exportAllUser_service } from "../services/functions.service.js"
 import { encryptFile as encryptFile_service, decryptFile as decryptFile_service } from "../services/cryptography.service.js"
-
+import { exportFile as exportFile_service } from "../services/utils/utils.js"
 import { constants } from "../services/utils/constants.js"
 
 const { status } = constants.response
@@ -24,4 +24,10 @@ const decryptFile = async (req, res) => {
     res.status(status.OK).json(user_db)
 }
 
-export { exportAllUser, encryptFile, decryptFile }
+const exportFile = async (req, res) => {
+
+    const user_db = await exportFile_service(req.body)
+    res.status(status.OK).json(user_db)
+}
+
+export { exportAllUser, encryptFile, decryptFile, exportFile }

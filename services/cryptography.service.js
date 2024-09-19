@@ -5,18 +5,80 @@ import path from 'path'
 import crypto from 'crypto'
 import { promisify } from 'util'
 import { finished as streamFinished } from 'stream';
+import { generateKeyFromPassword } from "./utils/utils.js"
 
-const encryptFile = async encrypt_request => {
+const encryptFile = async (req) => {
 
-    const { error } = encrypt_regex.validate(encrypt_request)
+    const { error } = encrypt_regex.validate(req)
     if (error) return response(false, error.details[0].message)
 
-    const inputKey = encrypt_request.inputKey;
-    const inputFile = path.join(encrypt_request.inputFilePath);
-    const outputFile = path.join(encrypt_request.outputFilePath);
+    const inputKey = req.inputKey;
+
+    const txtFileData = req.fileData;
+    console.log('Archivo enviado: ', txtFileData);
+
+    // Decodificar el archivo de Base64
+    const buffer = Buffer.from(txtFileData, 'base64');
+
+    // Convertir el buffer a una cadena de texto
+    const textContent = buffer.toString('utf8');
+    console.log('Archivo ya transformado a texto: ', textContent);
+
+    const password = generateKeyFromPassword(inputKey);
+    const algorithm = 'aes-256-cbc'; // Algoritmo de cifrado
+    const key = Buffer.from(password, 'hex');
+
+    const iv = crypto.randomBytes(16); // Vector de inicialización (IV) aleatorio
+
+    try {
+        // Crear el cifrador
+        const cipher = crypto.createCipheriv(algorithm, key, iv);
+        let encrypted = cipher.update(textContent, 'utf8', 'hex');
+        encrypted += cipher.final('hex');
+
+        console.log('Archivo cifrado: ', encrypted);
+
+        const fileName = 'File_encriptado.txt';
+        const contentType = 'text/plain';
+
+        // Convertir el string a un buffer
+        const buffer = Buffer.from(encrypted, 'utf8');
+        //console.log(buffer.length);
+
+        // Configurar los encabezados de respuesta para la descarga del archivo
+        const responseData = {
+            headers: {
+                'Content-Disposition': `attachment; filename="${fileName}"`,
+                'Content-Type': contentType,
+                'Content-Length': buffer.length
+            },
+            buffer: buffer
+        };
+        //res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+       // res.setHeader('Content-Type', contentType);
+        //res.setHeader('Content-Length', buffer.length);
+
+        // Enviar el stream al cliente
+        //res.send(buffer);
+        //return res.json({ res });
+        return response(true, 'Archivo cifrado correctamente.', responseData)
+
+    } catch (err) {
+        console.log(err.message);
+
+        return response(false, 'Error al cifrar el archivo.', err.message)
+    }
+
+
+    //const fileData = encrypt_request.inputKey
+
+
+
+    /*const password = generateKeyFromPassword(inputKey);
 
     const algorithm = 'aes-256-cbc'; // Algoritmo de cifrado
-    const key = Buffer.from(inputKey, 'hex');
+    const key = Buffer.from(password, 'hex');
+  
     const iv = crypto.randomBytes(16); // Vector de inicialización (IV) aleatorio
 
     // Crear los streams para leer y escribir el archivo
@@ -41,8 +103,8 @@ const encryptFile = async encrypt_request => {
 
     } catch (err) {
 
-        return response(false, 'Error al cifrar el archivo.')
-    }
+        return response(false, 'Error al cifrar el archivo.', err.message)
+    }*/
 }
 
 const decryptFile = async decrypt_request => {
@@ -55,8 +117,10 @@ const decryptFile = async decrypt_request => {
     const inputFile = path.join(decrypt_request.inputFilePath);
     const outputFile = path.join(decrypt_request.outputFilePath);
 
+    const password = generateKeyFromPassword(inputKey);
+
     const algorithm = 'aes-256-cbc'; // Algoritmo de cifrado
-    const key = Buffer.from(inputKey, 'hex');
+    const key = Buffer.from(password, 'hex');
 
     try {
         // Leer el archivo cifrado
@@ -87,8 +151,8 @@ const decryptFile = async decrypt_request => {
         return response(true, 'Archivo descifrado exitosamente.')
 
     } catch (err) {
-        
-        return response(false, 'Error al descifrar el archivo.')
+
+        return response(false, 'Error al descifrar el archivo.', err.message)
     }
 }
 

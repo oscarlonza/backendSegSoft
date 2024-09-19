@@ -5,13 +5,15 @@ const export_regex = Joi.object({
 })
 
 const encrypt_regex = Joi.object({
-    inputKey: Joi.string().min(20).max(256).required(),
-    inputFilePath: Joi.string().required(),
-    outputFilePath: Joi.string().required()
+    inputKey: Joi.string().min(4).max(256).required(),
+    //fileName: Joi.string().min(4).max(256).required(),
+    fileData: Joi.string().required()//,
+    //inputFilePath: Joi.string().required(),
+    //outputFilePath: Joi.string().required()
 })
 
 const decrypt_regex = Joi.object({
-    inputKey: Joi.string().min(20).max(256).required(),
+    inputKey: Joi.string().min(4).max(256).required(),
     inputFilePath: Joi.string().required(),
     outputFilePath: Joi.string().required()
 })
