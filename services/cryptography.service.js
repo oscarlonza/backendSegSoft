@@ -18,10 +18,10 @@ const encryptFile = async (req) => {
     console.log('Archivo enviado: ', txtFileData);
 
     // Decodificar el archivo de Base64
-    //const buffer = Buffer.from(txtFileData, 'base64');
+    const buffer = Buffer.from(txtFileData, 'base64');
 
     // Convertir el buffer a una cadena de texto
-    const textContent = txtFileData.toString('utf8');
+    const textContent = buffer.toString('utf8');
     console.log('Archivo ya transformado a texto: ', txtFileData);
 
     const password = generateKeyFromPassword(inputKey);
@@ -118,8 +118,8 @@ const decryptFile = async req => {
     const buffer = Buffer.from(txtFileData, 'base64');
 
     // Convertir el buffer a una cadena de texto
-    const textContent = txtFileData.toString('utf8');
-    console.log('Archivo transformado a texto: ', buffer);
+    const textContent = buffer.toString('utf8');
+    console.log('Archivo transformado a texto: ', textContent);
 
     const password = generateKeyFromPassword(inputKey);
     const algorithm = 'aes-256-cbc'; // Algoritmo de cifrado
