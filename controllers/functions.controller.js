@@ -15,13 +15,44 @@ const exportAllUser = async (req, res) => {
 const encryptFile = async (req, res) => {
 
     const user_db = await encryptFile_service(req.body)
-    res.status(status.OK).json(user_db)
+    if (user_db.process) {
+
+        const fileName = req.body.fileName || 'encryptedFile.data';
+        const encrypted = user_db.data.encrypted;
+        const buffer = Buffer.from(encrypted, 'utf8');
+        res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+        res.setHeader('Content-Type', 'text/plain');
+        res.setHeader('Content-Length', buffer.length);
+
+        // Enviar el stream al cliente
+        res.send(buffer);
+
+        //res.status(status.OK).json(user_db)
+    } else {
+        res.status(status.OK).json(user_db)
+    }
 }
 
 const decryptFile = async (req, res) => {
 
     const user_db = await decryptFile_service(req.body)
-    res.status(status.OK).json(user_db)
+    if (user_db.process) {
+
+        const fileName = req.body.fileName || 'decryptedFile.data';
+        const decrypted = user_db.data.decrypted;
+        const buffer = Buffer.from(decrypted, 'utf8');
+        const textContent = buffer.toString('utf8');
+        res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+        res.setHeader('Content-Type', 'text/plain');
+        res.setHeader('Content-Length', buffer.length);
+
+        // Enviar el stream al cliente
+        res.send(buffer);
+
+        //res.status(status.OK).json(user_db)
+    } else {
+        res.status(status.OK).json(user_db)
+    }
 }
 
 const exportFile = async (req, res) => {
