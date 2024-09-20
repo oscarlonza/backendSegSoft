@@ -7,8 +7,8 @@ import { promisify } from 'util'
 import { finished as streamFinished } from 'stream';
 import { generateKeyFromPassword } from "./utils/utils.js"
 
-
-const iv = crypto.randomBytes(16); // Vector de inicialización (IV) aleatorio
+const ivEnvironment = process.env.IVTOKEN;
+const iv = ivEnvironment ? Buffer.from(ivEnvironment,'base64') :crypto.randomBytes(16); // Vector de inicialización (IV) aleatorio
 //const iv = crypto.getRandomValues(new Uint8Array(12));
 
 const encryptFile = async (req) => {
@@ -42,6 +42,8 @@ const encryptFile = async (req) => {
             ['encrypt']
         );
     
+        console.log('IV token: ', iv);
+
         const encrypted = await crypto.subtle.encrypt(
             { name: 'AES-GCM', iv },
             key,
@@ -94,6 +96,8 @@ const decryptFile = async req => {
             false,
             ['decrypt']
         );
+        
+        console.log('IV token: ', iv);
     
         const decrypted = await crypto.subtle.decrypt(
             { name: 'AES-GCM', iv },

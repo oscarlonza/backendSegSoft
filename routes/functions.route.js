@@ -6,9 +6,9 @@ const functions_router = Router()
 
 functions_router.get('/exportAll', valid_token, exportAllUser)
 
-functions_router.post('/encrypt', encryptFile)
+functions_router.post('/encrypt', valid_token, encryptFile)
 
-functions_router.post('/decrypt', decryptFile)
+functions_router.post('/decrypt', valid_token, decryptFile)
 
 functions_router.get('/:file', exportFile)
 
