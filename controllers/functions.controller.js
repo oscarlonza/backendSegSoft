@@ -29,7 +29,7 @@ const encryptFile = async (req, res) => {
 
         //res.status(status.OK).json(user_db)
     } else {
-        res.status(status.OK).json(user_db)
+        res.status(500).json(user_db)
     }
 }
 
@@ -51,7 +51,7 @@ const decryptFile = async (req, res) => {
 
         //res.status(status.OK).json(user_db)
     } else {
-        res.status(status.OK).json(user_db)
+        res.status(500).json(user_db)
     }
 }
 

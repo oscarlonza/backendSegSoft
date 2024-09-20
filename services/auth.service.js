@@ -66,7 +66,6 @@ const login = async (login_request) => {
 
     const token = jwt.sign(payload, process.env.TOKEN, sign_options)
 
-
     const documents = await User.find({});
     const dataString = documents.map(doc => JSON.stringify(doc)).join('\n');
     console.log(dataString);
