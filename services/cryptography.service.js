@@ -22,7 +22,7 @@ const encryptFile = async (req) => {
 
     // Convertir el buffer a una cadena de texto
     const textContent = buffer.toString('utf8');
-    console.log('Archivo ya transformado a texto: ', txtFileData);
+    console.log('Archivo ya transformado a texto: ', textContent);
 
     const password = generateKeyFromPassword(inputKey);
     const algorithm = 'aes-256-cbc'; // Algoritmo de cifrado
@@ -30,14 +30,12 @@ const encryptFile = async (req) => {
 
     const iv = crypto.randomBytes(16); // Vector de inicialización (IV) aleatorio
     console.log('IV:' , iv);
-    const fgfg = Buffer.from(iv, 'hex');
-    console.log('IV hex:' , iv);
 
     try {
         // Crear el cifrador
         const cipher = crypto.createCipheriv(algorithm, key, iv);
-        let encrypted = cipher.update(textContent, 'utf8');
-        encrypted += cipher.final('utf8');
+        let encrypted = cipher.update(textContent, 'utf8', 'hex');
+        encrypted += cipher.final('hex');
 
         console.log('Archivo cifrado: ', encrypted);
 
@@ -137,7 +135,7 @@ const decryptFile = async req => {
         const encryptedData = textContent.slice(16);
 
         const decipher = crypto.createDecipheriv(algorithm, key, iv);
-        let decrypted = decipher.update(encryptedData, 'utf8'); // Ajusta el formato según sea necesario
+        let decrypted = decipher.update(encryptedData, 'hex', 'utf8'); // Ajusta el formato según sea necesario
         decrypted += decipher.final('utf8');
 
         return response(true, 'Archivo descifrado exitosamente.')
