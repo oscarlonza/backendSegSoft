@@ -10,9 +10,21 @@ const port = process.env.PORT
 
 await connection()
 
-app.use(cors())
 app.use(express.json())
 app.use(cookieParser())
+
+const corsOptions = {
+    origin: '*',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Credentials', true);
+     next();
+ });
 
 app.use('/api', router)
 
