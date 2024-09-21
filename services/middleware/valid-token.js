@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { constants } from "../utils/constants.js";
 import { response } from "../utils/response.js";
+import csrf from 'csurf';
 
 const valid_token = (req, res, next) => {
     const { status, message } = constants.response;
@@ -33,4 +34,7 @@ const valid_token_or_next = (req, res, next) => {
     }
 };
 
-export { valid_token, valid_token_or_next };
+// Configurar CSRF protection middleware
+const csrfProtection = csrf({ cookie: true });
+
+export { valid_token, valid_token_or_next, csrfProtection };
